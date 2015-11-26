@@ -23,7 +23,7 @@ get_pid() {
 }
 
 is_running() {
-    [ -f "$pid_file" ] && ps `get_pid` > /dev/null 2>&1
+    [ -f "$pid_file" ] && ps $(get_pid) > /dev/null 2>&1
 }
 
 case "$1" in
@@ -34,7 +34,7 @@ case "$1" in
         echo "Starting $name"
         cd "$dir"
         if [ -z "$user" ]; then
-            sudo $cmd >> "$stdout_log" 2>> "$stderr_log" &
+            $cmd >> "$stdout_log" 2>> "$stderr_log" &
         else
             sudo -u "$user" $cmd >> "$stdout_log" 2>> "$stderr_log" &
         fi
@@ -48,7 +48,7 @@ case "$1" in
     stop)
     if is_running; then
         echo -n "Stopping $name.."
-        kill `get_pid`
+        kill $(get_pid)
         for i in {1..10}
         do
             if ! is_running; then
